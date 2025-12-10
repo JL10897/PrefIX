@@ -1,6 +1,6 @@
 # 批量用户模拟方案（OpenAI）
 
-- 数据源：`/Users/JL/Desktop/Agent_IX_Personalization/Processing/BFCL_v3_multi_turn_long_context_rewrite_filled.json`（按 id 后缀数字筛选 `--start-index`~`--end-index`）。
+- 数据源：`/Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization/Processing/BFCL_v3_multi_turn_long_context_rewrite_filled.json`（按 id 后缀数字筛选 `--start-index`~`--end-index`）。
 - 历史存储：`bfcl_eval/user_simulator/history/<model_sanitized>/<entry_id>.json`，JSON 数组，保留 user/assistant/tool 消息；每轮写回。
 - Persona：从 `bfcl_eval/user_simulator/persona_prompt.md` 解析；`--persona` 指定，未提供则不加 persona。
 - Prompt 结构（模拟器）：固定声明 → persona 描述/示例（若有） → `simulator_prompt.md` → `<dialog_history>`（空为 []） → 高阶指令 → 终止提醒 → “Return only the next user turn message.”

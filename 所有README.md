@@ -1,6 +1,6 @@
 # Gorilla 是推出 OpenFunctions 模型和 API 数据集的主体项目，而 BFCL（Berkeley Function Calling Leaderboard）是 Gorilla 团队在同一仓库内构建的评测套件，用来衡量这些模型（以及其他模型）在函数调用任务上的表现。
 
-# /Users/JL/Desktop/Agent_IX_Personalization/gorilla/data
+# /Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization/gorilla/data
 • - api/（gorilla/data/api）存放的是官方整理的“核心 API 说明”集合，例如 tensorflowhub_api.jsonl、torchhub_api.jsonl、
     huggingface_api.jsonl 等，每条记录都详细列出 api_call、参数、依赖和示例代码（见 gorilla/data/api/
     tensorflowhub_api.jsonl 开头几行）。这些是 Gorilla 早期训练/推理时最常用的、结构较稳定的 API 清单，可直接喂给模型或
@@ -191,7 +191,7 @@ Gorilla OpenFunctions 是一个模型，不是连接器。
  - 启动 Docker：打开 Docker Desktop，确认鲸鱼图标是 Running，MySQL 容器 ix_personalization_goex（或
   你命名的容器）处于 Up 状态；若已删除，重新运行 docker run -d --name ix_personalization_goex -e
   MYSQL_ROOT_PASSWORD=1002 -e MYSQL_DATABASE=test_database -p 3306:3306 mysql:8.0 并导入所需数据。
-- 激活 Conda 环境：终端 cd /Users/JL/Desktop/Agent_IX_Personalization && source /opt/anaconda3/etc/
+- 激活 Conda 环境：终端 cd "/Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization" && source /opt/anaconda3/etc/
   profile.d/conda.sh && conda activate ix_personalization，确保 pip install -e gorilla/goex 已完成且
   依赖未丢失（pip list 可检查 httpx/openai 等版本）。
 - 加载 .env / user_config：.env 中的 DATABASE_*、OPENAI_API_KEY、GOOGLE 等变量会被 load_dotenv() 自

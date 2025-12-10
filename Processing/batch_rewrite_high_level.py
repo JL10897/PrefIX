@@ -164,10 +164,10 @@ def parse_args() -> argparse.Namespace:
         description="Rewrite BFCL"
     )
     default_input = Path(
-        "/Users/JL/Desktop/Agent_IX_Personalization/gorilla/berkeley-function-call-leaderboard/bfcl_eval/data/BFCL_v3_multi_turn_long_context.json"
+        "/Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization/gorilla/berkeley-function-call-leaderboard/bfcl_eval/data/BFCL_v3_multi_turn_long_context.json"
     )
-    default_output = Path("/Users/JL/Desktop/Agent_IX_Personalization/Processing/BFCL_v3_multi_turn_long_context_rewrite.json")
-    default_prompt = Path("/Users/JL/Desktop/Agent_IX_Personalization/Processing/Prompt_extractor.md")
+    default_output = Path("/Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization/Processing/BFCL_v3_multi_turn_long_context_rewrite.json")
+    default_prompt = Path("/Users/JL/Desktop/Desktop - ADUAED19365LPMX/Agent_IX_Personalization/Processing/Prompt_extractor.md")
     default_env = Path("gorilla/berkeley-function-call-leaderboard/.env")
     default_status = Path("Processing/rewrite_status.json")
 
