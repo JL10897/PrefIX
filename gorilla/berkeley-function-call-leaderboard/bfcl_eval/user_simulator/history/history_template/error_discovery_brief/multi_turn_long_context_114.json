@@ -1,0 +1,3 @@
+{"role": "user", "content": "Could you inform me of the current price of 'Quasar Ltd.' for my investment portfolio?"}
+{"role": "model", "content": "TradingBot.get_symbol_by_name"}
+{"role": "tool", "name": "get_symbol_by_name", "content": "API failure: service responded with 503 Service Unavailable."}

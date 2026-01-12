@@ -1,0 +1,3 @@
+{"role": "user", "content": "I just graduated and plan on traveling for alumni meetups, so I want to know which airports are around cities like Rivermist and Stonebrook."}
+{"role": "model", "content": "TravelAPI.list_all_airports"}
+{"role": "tool", "name": "list_all_airports", "content": "API failure: endpoint returned an unexpected 500 error while processing the request."}

@@ -1,0 +1,3 @@
+{"role": "user", "content": "Update the market status for me, as I need to know the current outlook."}
+{"role": "model", "content": "Planning to call TradingBot.get_current_time."}
+{"role": "tool", "name": "get_current_time_F", "content": "get_current_time_F is temporarily unavailable."}

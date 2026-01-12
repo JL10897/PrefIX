@@ -1,0 +1,3 @@
+{"role": "user", "content": "I've been thinking of visiting Autumnville for a while now, but I'm not sure how far it is from here in Crescent Hollow."}
+{"role": "model", "content": "VehicleControlAPI.get_zipcode_based_on_city"}
+{"role": "tool", "name": "get_zipcode_based_on_city", "content": "API failure: service responded with 503 Service Unavailable."}

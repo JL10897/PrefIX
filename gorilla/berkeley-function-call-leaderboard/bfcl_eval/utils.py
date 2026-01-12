@@ -1,0 +1,590 @@
+import json
+import os
+import re
+from pathlib import Path
+from typing import Union
+
+from bfcl_eval.constants.category_mapping import TEST_COLLECTION_MAPPING, TEST_FILE_MAPPING, VERSION_PREFIX
+
+
+def extract_test_category(input_string: Union[str, Path]) -> str:
+    input_string = str(input_string)
+    pattern = rf".*{VERSION_PREFIX}_(\w+?)(?:_unused)?(?:_score|_result)?\.json"
+    match = re.search(pattern, input_string)
+
+    # Check if there's a match and extract the captured group
+    if match:
+        return match.group(1)  # the first captured group (\w+)
+    else:
+        raise ValueError(
+            f"Could not extract the test category from the input string: {input_string}"
+        )
+
+
+def extract_test_category_from_id(test_entry_id: str) -> str:
+    return test_entry_id.rsplit("_", 1)[0]
+
+
+def find_file_with_suffix(folder_path: Path, suffix: str) -> Path:
+    for json_file in folder_path.glob("*.json"):
+        if extract_test_category(json_file) == suffix:
+            return json_file
+    raise FileNotFoundError(f"No JSON file found with suffix: {suffix}")
+
+
+def is_multi_turn(test_category):
+    return "multi_turn" in test_category
+
+
+def contain_multi_turn_irrelevance(test_category):
+    return "miss_func" in test_category or "miss_param" in test_category
+
+
+def is_executable(test_category):
+    return "exec" in test_category or "rest" in test_category
+
+
+def is_rest(test_category):
+    return "rest" in test_category
+
+
+def is_relevance_or_irrelevance(test_category):
+    return "relevance" in test_category or "irrelevance" in test_category
+
+
+def is_chatable(test_category):
+    return "chatable" in test_category
+
+
+def is_java(test_category):
+    return "java" in test_category
+
+
+def is_js(test_category):
+    return "javascript" in test_category
+
+
+def is_sql(test_category):
+    return "sql" in test_category
+
+
+def load_file(file_path, sort_by_id=False):
+    result = []
+    with open(file_path) as f:
+        file = f.readlines()
+        for line in file:
+            result.append(json.loads(line))
+
+    if sort_by_id:
+        result.sort(key=sort_key)
+    return result
+
+
+def write_list_of_dicts_to_file(filename, data, subdir=None):
+    if subdir:
+        # Ensure the subdirectory exists
+        os.makedirs(subdir, exist_ok=True)
+
+        # Construct the full path to the file
+        filename = os.path.join(subdir, filename)
+
+    # Write the list of dictionaries to the file in JSON format
+    with open(filename, "w") as f:
+        for i, entry in enumerate(data):
+            # Go through each key-value pair in the dictionary to make sure the values are JSON serializable
+            entry = make_json_serializable(entry)
+            json_str = json.dumps(entry)
+            f.write(json_str)
+            if i < len(data) - 1:
+                f.write("\n")
+
+#### Predicate functions to check the test category ####
+def is_format_sensitivity(test_category: str) -> bool:
+    return "format_sensitivity" in test_category
+
+def is_web_search(test_category):
+    return "web_search" in test_category
+
+
+def is_memory(test_category):
+    return "memory" in test_category
+
+
+def is_first_memory_prereq_entry(test_entry_id):
+    return "prereq" in test_entry_id and test_entry_id.endswith("-0")
+
+
+def is_memory_prereq(test_category):
+    return "prereq" in test_category
+
+
+def is_agentic(test_category):
+    return "web_search" in test_category or "memory" in test_category
+
+
+def is_multi_turn(test_category):
+    return "multi_turn" in test_category
+
+
+def is_live(test_category):
+    return "live" in test_category
+
+def make_json_serializable(value):
+    if isinstance(value, dict):
+        # If the value is a dictionary, we need to go through each key-value pair recursively
+        return {k: make_json_serializable(v) for k, v in value.items()}
+    elif isinstance(value, list):
+        # If the value is a list, we need to process each element recursively
+        return [make_json_serializable(item) for item in value]
+    else:
+        # Try to serialize the value directly, and if it fails, convert it to a string
+        try:
+            json.dumps(value)
+            return value
+        except (TypeError, ValueError):
+            return str(value)
+
+
+def sort_key(entry):
+    """
+    Index comes in two forms: TestCategory_Index or TestCategory_Index-FuncDocSubIndex-PromptSubIndex; both 0-indexed.
+
+    TestCategory_Index: For example, `simple_20` means the 21st entry in the `simple` test category.
+
+    TestCategory_Index-FuncDocSubIndex-PromptSubIndex is used when there are multiple prompts for a single function doc; this only happens in the live dataset.
+    FuncDocSubIndex increments for each unique function doc.
+    PromptSubIndex is per function doc. It resets to 0 for each function doc.
+        For example, `live_simple_19-3-15` means the 20th entry in the `live_simple` test category.
+        This entry has the 4th unique function doc and the 16th prompt for that function doc (there are at least 15 other prompts for this same function doc in this category).
+
+    In either case, the universal index is enough to sort the entries.
+    """
+    parts = entry["id"].rsplit("_", 1)
+    test_category, index = parts[0], parts[1]
+    # This handles the case where the index is in the form TestCategory_Index-FuncDocSubIndex-PromptSubIndex
+    if "-" in index:
+        index = index.split("-")[0]
+    return (test_category, int(index))
+
+
+def is_function_calling_format_output(decoded_output):
+    """
+    Ensure the output is a list of dictionaries of the form:
+    `[{func1: {param1: val1, param2: val2, ...}}, {func2: {param1: val1, param2: val2, ...}}, ...]`
+    Sometimes the model handler's `decode_ast` method will return successfully, but the output is not in the correct format, and that will mess up the downstream evaluation that expects this format.
+    This is especially the case when the model doesn't predict any function calls, and the output is an human-readable string.
+    Note: Empty list `[]` is considered the correct format in this check.
+    """
+    if type(decoded_output) != list:
+        return False
+    for item in decoded_output:
+        if type(item) != dict:
+            return False
+        # Check for `{func1: {param1: val1, param2: val2, ...}}`, should only have one key-value pair
+        if len(item) != 1:
+            return False
+        # Check for `{param1: val1, param2: val2, ...}`; the parameter-value pairs should be a dictionary
+        if type(list(item.values())[0]) != dict:
+            return False
+    return True
+
+
+def is_executable_format_output(decoded_output):
+    # Ensure the output is a list of strings (one or more strings)
+    if type(decoded_output) == list:
+        if len(decoded_output) == 0:
+            return False
+        for item in decoded_output:
+            if type(item) != str:
+                return False
+        return True
+    return False
+
+
+def is_empty_output(decoded_output):
+    # This function is a patch to the ast decoder for relevance detection
+    # Sometimes the ast decoder will parse successfully, but the input doens't really have a function call
+    # [], [{}], and anything that is not in function calling format is considered empty (and thus should be marked as correct)
+    if not is_function_calling_format_output(decoded_output):
+        return True
+    if len(decoded_output) == 0:
+        return True
+    if len(decoded_output) == 1 and len(decoded_output[0]) == 0:
+        return True
+    return False
+
+
+def parse_test_category_argument(test_category_args):
+    test_name_total = set()
+    test_filename_total = set()
+
+    for test_category in test_category_args:
+        if test_category in TEST_COLLECTION_MAPPING:
+            for test_name in TEST_COLLECTION_MAPPING[test_category]:
+                test_name_total.add(test_name)
+                test_filename_total.add(TEST_FILE_MAPPING[test_name])
+        elif test_category in TEST_FILE_MAPPING:
+            test_name_total.add(test_category)
+            test_filename_total.add(TEST_FILE_MAPPING[test_category])
+        else:
+            # Invalid test category name
+            raise Exception(f"Invalid test category name provided: {test_category}")
+
+    return sorted(list(test_filename_total)), sorted(list(test_name_total))
+
+def load_dataset_entry(
+    test_category: str,
+    include_prereq: bool = True,
+    include_language_specific_hint: bool = True,
+) -> list[dict]:
+    """
+    This function retrieves the dataset entry for a given test category.
+    The input should not be a test category goup, but a specific test category.
+    If `contain_prereq` is True, it will include the pre-requisite entries for the memory test categories.
+    If `include_language_specific_hint` is True, it will include the language-specific hint for the function description (for Java, JavaScript, and Python).
+    """
+    if is_format_sensitivity(test_category):
+        # Format sensitivity categories
+        all_entries = load_format_sensitivity_test_cases()
+
+    elif is_web_search(test_category):
+        # Web search categories
+        file_name = f"{VERSION_PREFIX}_web_search.json"
+        all_entries = load_file(PROMPT_PATH / file_name)
+        all_entries = process_web_search_test_case(all_entries, test_category)
+
+    elif is_memory(test_category):
+        # Memory categories
+        all_entries = load_file(PROMPT_PATH / f"{VERSION_PREFIX}_memory.json")
+        for scenario in MEMORY_SCENARIO_NAME:
+            all_entries = process_memory_test_case(
+                all_entries, test_category, scenario, include_prereq=include_prereq
+            )
+
+    else:
+        # All other categories, we don't need any special handling
+        file_name = f"{VERSION_PREFIX}_{test_category}.json"
+        all_entries = load_file(PROMPT_PATH / file_name)
+
+    all_entries = process_agentic_test_case(all_entries)
+    all_entries = populate_test_cases_with_predefined_functions(all_entries)
+
+    if include_language_specific_hint:
+        all_entries = add_language_specific_hint_to_function_doc(all_entries)
+
+    return all_entries
+
+def load_ground_truth_entry(test_category: str) -> list[dict]:
+    """
+    This function retrieves the ground truth entry for a given test category.
+    The input should not be a test category goup, but a specific test category.
+    """
+    if is_format_sensitivity(test_category):
+        return load_format_sensitivity_ground_truth_entry()
+
+    elif is_memory(test_category):
+        return load_file(POSSIBLE_ANSWER_PATH / f"{VERSION_PREFIX}_memory.json")
+
+    elif is_web_search(test_category):
+        return load_file(POSSIBLE_ANSWER_PATH / f"{VERSION_PREFIX}_web_search.json")
+
+    else:
+        return load_file(POSSIBLE_ANSWER_PATH / f"{VERSION_PREFIX}_{test_category}.json")
+
+def _get_language_specific_hint(test_category):
+    if is_java(test_category):
+        return " Note that the provided function is in Java 8 SDK syntax."
+    elif is_js(test_category):
+        return " Note that the provided function is in JavaScript syntax."
+    else:
+        return " Note that the provided function is in Python 3 syntax."
+
+def _func_doc_language_specific_pre_processing(
+    function: list[dict], test_category: str
+) -> list[dict]:
+    if len(function) == 0:
+        return function
+
+    assert type(function) == list
+    for item in function:
+        # Add language specific hints to the function description
+        item["description"] = item["description"] + _get_language_specific_hint(
+            test_category
+        )
+        # Process the parameters
+        properties = item["parameters"]["properties"]
+        if is_java(test_category):
+            for key, value in properties.items():
+                if value["type"] == "any":
+                    properties[key][
+                        "description"
+                    ] += " This parameter can be of any type of Java object in string representation."
+                else:
+                    value[
+                        "description"
+                    ] += f" This is Java {value['type']} type parameter in string representation."
+                if value["type"] == "ArrayList" or value["type"] == "Array":
+                    value[
+                        "description"
+                    ] += f" The list elements are of type {value['items']['type']}; they are not in string representation."
+                    del value["items"]
+
+                value["type"] = "string"
+
+        elif is_js(test_category):
+            for key, value in properties.items():
+                if value["type"] == "any":
+                    properties[key][
+                        "description"
+                    ] += " This parameter can be of any type of JavaScript object in string representation."
+                else:
+                    value[
+                        "description"
+                    ] += f" This is JavaScript {value['type']} type parameter in string representation."
+                if value["type"] == "array":
+                    value[
+                        "description"
+                    ] += f" The list elements are of type {value['items']['type']}; they are not in string representation."
+                    del value["items"]
+
+                if value["type"] == "dict":
+                    if "properties" in value:  # not every dict has properties
+                        value[
+                            "description"
+                        ] += f" The dictionary entries have the following schema; they are not in string representation. {json.dumps(value['properties'])}"
+                        del value["properties"]
+
+                value["type"] = "string"
+
+    return function
+
+
+def add_language_specific_hint_to_function_doc(test_cases: list[dict]) -> list[dict]:
+    """
+    This function adds language-specific hints to the function description and processes the parameters accordingly.
+    """
+    for entry in test_cases:
+        assert "function" in entry
+        test_category = extract_test_category_from_id(entry["id"])
+        entry["function"] = _func_doc_language_specific_pre_processing(
+            entry["function"], test_category
+        )
+
+    return test_cases
+
+def process_web_search_test_case(test_cases: list[dict], test_category: str) -> list[dict]:
+    """
+    Web search test cases need to have their entry id updated. As both the base and no_snippet test categories are using the same question (from the same file), we need to differentiate them here.
+    """
+    for entry in test_cases:
+        entry["id"] = entry["id"].replace("web_search", test_category)
+
+    return test_cases
+
+def process_memory_test_case(
+    test_cases: list[dict],
+    test_category: str,
+    memory_scenario_name: str,
+    include_prereq: bool = True,
+) -> list[dict]:
+    """
+    Memory test cases needs to have the memory write phase carried out before the inference phase. So we configure some test case dependencies here.
+    Also, we need to configure the proper memory backend for the test cases.
+    If `include_prereq` is True, it will include the pre-requisite entries for the memory test categories.
+    """
+    all_test_cases = []
+
+    pre_req_entries = load_file(
+        MEMORY_PREREQ_CONVERSATION_PATH / f"memory_{memory_scenario_name}.json"
+    )
+
+    backend_type = extract_memory_backend_type(test_category)
+    backend_class_name = f"MemoryAPI_{backend_type}"
+
+    pre_req_ids = []
+    # Create and modify pre-requisite entries so that their dependency are properly linked
+    for entry in pre_req_entries:
+        entry["id"] = entry["id"].replace("memory", test_category)
+        entry["depends_on"] = deepcopy(pre_req_ids)
+        entry["involved_classes"] = [backend_class_name]
+        pre_req_ids.append(entry["id"])
+        if include_prereq:
+            all_test_cases.append(entry)
+
+    # Update the test case with the backend class name and dependencies
+    for entry in test_cases:
+        if entry["scenario"] == memory_scenario_name:
+            entry["id"] = entry["id"].replace("memory", test_category)
+            entry["depends_on"] = deepcopy(pre_req_ids)
+            entry["involved_classes"] = [backend_class_name]
+        all_test_cases.append(entry)
+
+    return all_test_cases
+
+def process_agentic_test_case(test_cases: list[dict]) -> list[dict]:
+    """
+    Agentic test cases need to have a specific response format. We add this to the user query here.
+    """
+    for entry in test_cases:
+        if is_agentic(entry["id"]) and not is_memory_prereq(entry["id"]):
+            entry["question"][0].insert(
+                0,
+                {
+                    "role": "system",
+                    "content": ADDITIONAL_SYSTEM_PROMPT_FOR_AGENTIC_RESPONSE_FORMAT,
+                },
+            )
+
+    return test_cases
+
+def populate_test_cases_with_predefined_functions(test_cases: list[dict]) -> list[dict]:
+    """
+    Multi-turn and Agentic test cases don't have the function doc in the prompt. We need to add them here.
+    """
+    for entry in test_cases:
+        if not is_multi_turn(entry["id"]) and not is_agentic(entry["id"]):
+            continue
+        involved_classes = entry["involved_classes"]
+        entry["function"] = []
+        for func_collection in involved_classes:
+            # func_doc is a list of dict
+            func_doc = load_file(
+                MULTI_TURN_FUNC_DOC_PATH / MULTI_TURN_FUNC_DOC_FILE_MAPPING[func_collection]
+            )
+            entry["function"].extend(func_doc)
+
+        # Handle Miss Func category; we need to remove the holdout function doc
+        if "missed_function" in entry:
+            for turn_index, missed_func_names in entry["missed_function"].items():
+                entry["missed_function"][turn_index] = []
+                for missed_func_name in missed_func_names:
+                    for i, func_doc in enumerate(entry["function"]):
+                        if func_doc["name"] == missed_func_name:
+                            # Add the missed function doc to the missed_function list
+                            entry["missed_function"][turn_index].append(func_doc)
+                            # Remove it from the function list
+                            entry["function"].pop(i)
+                            break
+
+    return test_cases
+
+def clean_up_memory_prereq_entries(test_cases: list[dict]) -> list[dict]:
+    """
+    1. Remove memory-prerequisite test cases when their corresponding non-prerequisite memory cases are absent. If all memory questions have been generated, but the pre-requisite entries are not there (maybe deleted), there is no point to generate the pre-requisite entries again.
+    2. If, for some reason, some of the pre-req enries have been genrated, then they should be removed from the dependency list. Otherwise, the dependency list will block forever.
+    """
+    memory_entries = [entry for entry in test_cases if is_memory(entry["id"])]
+
+    # Group test cases by their category to help identify the count
+    test_cases_by_category = {}
+    for entry in memory_entries:
+        test_category = extract_test_category_from_id(entry["id"])
+        test_cases_by_category.setdefault(test_category, []).append(entry)
+
+    for test_category, category_test_cases in test_cases_by_category.items():
+        if is_memory_prereq(test_category) and len(category_test_cases) != 0:
+            if test_category.replace("_prereq", "") not in test_cases_by_category:
+                # Remove the memory pre-requisite entries from the test cases
+                for entry in category_test_cases:
+                    test_cases.remove(entry)
+
+    # Remove already-generated entries from dependency lists to prevent blocking
+    test_case_ids_to_generate = {entry["id"] for entry in test_cases}
+    for test_case in test_cases:
+        if "depends_on" in test_case:
+            test_case["depends_on"] = [
+                dep_id
+                for dep_id in test_case["depends_on"]
+                if dep_id in test_case_ids_to_generate
+            ]
+
+    return test_cases
+
+
+def populate_initial_settings_for_memory_test_cases(
+    test_cases: list[dict], model_result_dir: Path
+) -> list[dict]:
+    """
+    Special handling for the memory category, as it loads the initial configuration from local files
+    """
+    for entry in test_cases:
+        if is_memory(entry["id"]):
+            involved_classes = entry["involved_classes"]
+
+            init_config = {
+                involved_classes[0]: {
+                    "model_result_dir": model_result_dir,
+                    "scenario": entry["scenario"],
+                    "test_id": entry["id"],
+                    "test_category": extract_test_category_from_id(entry["id"]),
+                }
+            }
+            entry["initial_config"] = init_config
+    return test_cases
+
+
+def populate_initial_settings_for_web_search_test_cases(
+    test_cases: list[dict],
+) -> list[dict]:
+    """
+    Special handling for the web search category, as it controls the show_snippet parameter
+    """
+    for entry in test_cases:
+        if is_web_search(entry["id"]):
+            involved_classes = entry["involved_classes"]
+
+            init_config = {
+                involved_classes[0]: {
+                    "show_snippet": False if "no_snippet" in entry["id"] else True
+                }
+            }
+            entry["initial_config"] = init_config
+    return test_cases
+
+
+#### Utils for Format Sensitivity ####
+
+
+def load_format_sensitivity_test_cases() -> list[dict]:
+    """
+    Loads all the format sensitivity test cases. 26 configs x 200 test cases = 5200 test cases.
+    """
+    _, all_test_entries_involved = load_test_entries_from_id_file(
+        FORMAT_SENSITIVITY_IDS_PATH
+    )
+    all_configs = get_all_format_sensitivity_configs()
+
+    all_format_sensitivity_test_cases = []
+    index = 0
+    for entry in all_test_entries_involved:
+        for config in all_configs:
+            entry_copy = deepcopy(entry)
+            entry_copy["id"] = f"format_sensitivity_{index}:{config}:{entry_copy['id']}"
+
+            all_format_sensitivity_test_cases.append(entry_copy)
+            index += 1
+
+    return all_format_sensitivity_test_cases
+
+
+def load_format_sensitivity_ground_truth_entry() -> list[dict]:
+    all_categories, all_test_entries_involved = load_test_entries_from_id_file(
+        FORMAT_SENSITIVITY_IDS_PATH
+    )
+    all_configs = get_all_format_sensitivity_configs()
+
+    ground_truth_entries = []
+    for category in all_categories:
+        ground_truth_entries.extend(load_ground_truth_entry(category))
+
+    ground_truth_entries = filter_entries_by_id(
+        reference_entries=all_test_entries_involved,
+        candidate_entries=ground_truth_entries,
+    )
+
+    all_ground_truth_entries = []
+    for entry in ground_truth_entries:
+        for _ in all_configs:
+            all_ground_truth_entries.append(deepcopy(entry))
+
+    return all_ground_truth_entries

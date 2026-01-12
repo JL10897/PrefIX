@@ -1,0 +1,3 @@
+{"role": "user", "content": "I'm planning a journey from Los Angeles to New York on the morning of April 15th 2024, preferring to fly business class."}
+{"role": "model", "content": "TravelAPI.compute_exchange_rate"}
+{"role": "tool", "name": "compute_exchange_rate", "content": "API failure: service responded with 503 Service Unavailable."}

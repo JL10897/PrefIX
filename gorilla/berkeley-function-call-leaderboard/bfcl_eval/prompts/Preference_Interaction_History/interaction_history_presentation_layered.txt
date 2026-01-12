@@ -1,0 +1,11 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Give me the system health summary."}
+{"role":"assistant","content":"All good.  Message_show_compact_presentation: CPU 42%, mem 63%, disk 71%, net 120Mbps."}
+
+{"role":"user","content":"Too flat—start with a headline then layer details."}
+{"role":"assistant","content":"Understood. Message_show_layered_presentation: Overall healthy; CPU 42%, mem 63%, disk 71%, net 120Mbps. I can expand with trends and alerts if you want."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"metric":"system_health"}', call_id='call_health', name='get_health', type='function_call', id='fc_300', status='completed')"}
+{"role":"assistant","content":"Details available on request: 24h CPU trend flat; mem stable; no active alerts."}
+{"role":"user","content":"That's the layered style I prefer."}
+<endstart>

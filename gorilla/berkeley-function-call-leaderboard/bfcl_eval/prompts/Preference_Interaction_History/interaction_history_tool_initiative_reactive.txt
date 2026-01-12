@@ -1,0 +1,10 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Generate the quarterly summary."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"report":"Q4"}', call_id='call_send_early', name='send_report', type='function_call', id='fc_240', status='completed')"}
+
+{"role":"user","content":"That went out too soon—wait until I say go."}
+{"role":"assistant","content":"Understood. I'll prepare but pause execution."}
+{"role":"assistant","content":"Message_confirmation: Ready to send the Q4 summary when you approve."}
+{"role":"user","content":"Good—stay reactive until I greenlight."}
+<endstart>

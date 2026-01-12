@@ -1,0 +1,13 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Translate this paragraph to Spanish."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"text":"..."}', call_id='call_t3', name='translate_api_A', type='function_call', id='fc_215', status='failed')"}
+{"role":"assistant","content":"Switching to API B."}
+
+{"role":"user","content":"Why did you change tools on your own? I don't like surprises."}
+{"role":"assistant","content":"Understood. Message_tool_switch_notice: API A failed; I can switch to API B for translation."}
+{"role":"user","content":"Okay, proceed with B."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"text":"..."}', call_id='call_t4', name='translate_api_B', type='function_call', id='fc_216', status='completed')"}
+{"role":"assistant","content":"Translation completed."}
+{"role":"user","content":"Thanks for checking first."}
+<endstart>

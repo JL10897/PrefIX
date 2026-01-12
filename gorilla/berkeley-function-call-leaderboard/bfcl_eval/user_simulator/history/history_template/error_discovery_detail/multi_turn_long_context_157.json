@@ -1,0 +1,3 @@
+{"role": "user", "content": "List all international airports currently accessible for travel."}
+{"role": "model", "content": "TravelAPI.list_all_airports"}
+{"role": "tool", "name": "list_all_airports", "content": "Network error: connection timed out while reaching the service."}

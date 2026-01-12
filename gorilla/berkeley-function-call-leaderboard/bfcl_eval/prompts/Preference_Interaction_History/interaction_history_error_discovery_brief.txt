@@ -1,0 +1,10 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Import the CSV and tell me if anything breaks."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"file":"data.csv"}', call_id='call_import', name='import_csv', type='function_call', id='fc_224', status='failed')"}
+
+{"role":"assistant","content":"Message_tool_failure_logic: Import failed because of malformed row 42; possible delimiter mismatch; suggest schema fix..."}
+{"role":"user","content":"Too much postmortem—just flag the failure."}
+{"role":"assistant","content":"Understood. Message_tool_failure_notice: Import failed (parse error)."}
+{"role":"user","content":"That's concise enough."}
+<endstart>

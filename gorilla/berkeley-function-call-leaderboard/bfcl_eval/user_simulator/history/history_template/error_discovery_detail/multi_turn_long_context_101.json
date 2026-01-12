@@ -1,0 +1,3 @@
+{"role": "user", "content": "Would you be able to update the market status with the current time?"}
+{"role": "model", "content": "TradingBot.get_current_time"}
+{"role": "tool", "name": "get_current_time", "content": "API failure: endpoint returned an unexpected 500 error while processing the request."}

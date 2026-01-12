@@ -1,0 +1,15 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Check CPU and memory on two servers; give me both at once."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"app-1"}', call_id='call_cpu1_seq', name='get_metrics', type='function_call', id='fc_209a', status='completed')"}
+{"role":"assistant","content":"CPU on app-1 is 40%."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"app-2"}', call_id='call_cpu2_seq', name='get_metrics', type='function_call', id='fc_210a', status='completed')"}
+{"role":"assistant","content":"CPU on app-2 is 35%."}
+
+{"role":"user","content":"This drip is slow, just do it and return both together."}
+{"role":"assistant","content":"Understood. Running checks in parallel and reporting together."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"app-1"}', call_id='call_cpu1', name='get_metrics', type='function_call', id='fc_209', status='completed')"}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"app-2"}', call_id='call_cpu2', name='get_metrics', type='function_call', id='fc_210', status='completed')"}
+{"role":"assistant","content":"Here are both results together: app-1 CPU 40%, mem 55%; app-2 CPU 35%, mem 60%."}
+{"role":"user","content":"Better—parallel and combined output."}
+<endstart>

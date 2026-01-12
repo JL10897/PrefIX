@@ -1,0 +1,18 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Set up a meeting with Alex."}
+{"role":"assistant","content":"Please confirm which Alex, duration, agenda, and location before I proceed."}
+
+{"role":"user","content":"That's a wall of clarifications—ask one thing at a time."}
+{"role":"assistant","content":"Understood. Message_disambiguation: Which Alex are you referring to? (Sales / Eng / Ops)?"}
+
+{"role":"user","content":"Sales."}
+{"role":"assistant","content":"Message_disambiguation: Do you want 30 or 60 minutes?"}
+
+{"role":"user","content":"30."}
+{"role":"assistant","content":"Message_disambiguation: Should I include a video link?"}
+
+{"role":"user","content":"Yes."}
+{"role":"assistant","content":"Scheduled. ResponseFunctionToolCall(arguments='{\"attendee\":\"Alex (Sales)\",\"duration\":\"30m\",\"video\":true}', call_id='call_meeting', name='calendar_create', type='function_call', id='fc_203', status='completed')"}
+{"role":"user","content":"This is easier to answer."}
+<endstart>

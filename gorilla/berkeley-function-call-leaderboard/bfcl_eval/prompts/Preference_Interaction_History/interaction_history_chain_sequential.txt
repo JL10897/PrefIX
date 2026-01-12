@@ -1,0 +1,16 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Check CPU, then memory on the db server. Dumping everything at once made it hard to follow."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"db-1","metric":"cpu"}', call_id='call_cpu_parallel', name='get_metric', type='function_call', id='fc_211a', status='completed')"}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"db-1","metric":"memory"}', call_id='call_mem_parallel', name='get_metric', type='function_call', id='fc_212a', status='completed')"}
+{"role":"assistant","content":"CPU 32%, memory 58%."}
+
+{"role":"user","content":"That's exactly the dump I can't follow—do it step by step and check in."}
+{"role":"assistant","content":"Understood. I'll go one at a time and notify after each."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"db-1","metric":"cpu"}', call_id='call_cpu', name='get_metric', type='function_call', id='fc_211', status='completed')"}
+{"role":"assistant","content":"CPU on db-1 is 32%. Proceeding to memory—okay to continue?"}
+{"role":"user","content":"Yes, continue."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"host":"db-1","metric":"memory"}', call_id='call_mem', name='get_metric', type='function_call', id='fc_212', status='completed')"}
+{"role":"assistant","content":"Memory on db-1 is 58%."}
+{"role":"user","content":"Clearer when it's sequenced like this."}
+<endstart>

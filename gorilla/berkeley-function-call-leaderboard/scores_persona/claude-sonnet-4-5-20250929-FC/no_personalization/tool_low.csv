@@ -1,0 +1,12 @@
+id,pass
+multi_turn_long_context_6,0.75
+multi_turn_long_context_9,0.4
+multi_turn_long_context_11,0.0
+multi_turn_long_context_19,1.0
+multi_turn_long_context_48,0.8
+multi_turn_long_context_53,0.6666666666666666
+multi_turn_long_context_55,0.5555555555555556
+multi_turn_long_context_105,0.8
+multi_turn_long_context_106,0.4
+multi_turn_long_context_162,0.7142857142857143
+accuracy,0.6087

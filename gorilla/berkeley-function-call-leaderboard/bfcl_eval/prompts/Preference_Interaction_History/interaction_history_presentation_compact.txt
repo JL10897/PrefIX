@@ -1,0 +1,9 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Give me the system health summary."}
+{"role":"assistant","content":"Message_show_sequential_output: I will present results step by step with sequential details. CPU load is 42%, memory 63%, disk 71%, network 120Mbps; over the last 24h the trend shows..."}
+
+{"role":"user","content":"This is too long—keep it tight."}
+{"role":"assistant","content":"Understood. Message_show_layered_output: I'll keep it brief. CPU 42%, mem 63%, disk 71%, net 120Mbps. All within thresholds."}
+{"role":"user","content":"Better."}
+<endstart>

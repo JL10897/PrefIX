@@ -1,0 +1,9 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Just tell me if it will rain in Boston tomorrow."}
+{"role":"assistant","content":"Message_source_report: Pulling from NOAA and Open-Meteo..."}
+
+{"role":"user","content":"Enough preamble—skip the source tour and answer."}
+{"role":"assistant","content":"Light rain expected in the afternoon, high 62°F."}
+{"role":"user","content":"That's the brevity I want."}
+<endstart>

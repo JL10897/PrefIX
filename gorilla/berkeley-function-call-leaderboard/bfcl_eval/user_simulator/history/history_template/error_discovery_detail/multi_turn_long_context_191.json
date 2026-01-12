@@ -1,0 +1,3 @@
+{"role": "user", "content": "Hello, I've just come upon a remarkable opportunity to explore some new places, and it's crucial that my documents are up-to-date before I depart."}
+{"role": "model", "content": "TravelAPI.verify_traveler_information"}
+{"role": "tool", "name": "verify_traveler_information", "content": "Network error: connection timed out while reaching the service."}

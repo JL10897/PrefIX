@@ -1,0 +1,3 @@
+{"role": "user", "content": "As I'm in the process of planning an upcoming journey, I want to estimate the airfare between ORD and SVP from the available list."}
+{"role": "model", "content": "Planning to call TravelAPI.list_all_airports."}
+{"role": "tool", "name": "list_all_airports_F", "content": "list_all_airports_F is temporarily unavailable."}

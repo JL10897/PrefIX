@@ -1,0 +1,12 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Resize the image for my slide deck."}
+{"role":"assistant","content":"Message_display_params: I will set width=1920, height=1080, format='png' and run the resize tool."}
+
+{"role":"user","content":"Please don't list parameters. Just get it done fast."}
+{"role":"assistant","content":"Understood. Executing without surfacing parameters."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{\"file_name\":\"slide.png\",\"width\":1920,\"height\":1080,\"format\":\"png\"}', call_id='call_300', name='image_resize', type='function_call', id='fc_300', status='completed')"}
+{"role":"assistant","content":"Done. The resized image is ready."}
+
+{"role":"user","content":"Much better."}
+<endstart>

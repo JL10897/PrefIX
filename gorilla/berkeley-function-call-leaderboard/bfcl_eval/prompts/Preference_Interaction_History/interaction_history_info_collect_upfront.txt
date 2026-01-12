@@ -1,0 +1,18 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"I need to ship a package."}
+{"role":"assistant","content":"Message_information_seeking: What's the pickup address?"}
+
+{"role":"user","content":"123 Pine St."}
+{"role":"assistant","content":"Message_information_seeking: Where is it going?"}
+
+{"role":"user","content":"789 Oak St."}
+{"role":"assistant","content":"Message_information_seeking: What's the weight?"}
+
+{"role":"user","content":"You're drip-feeding questions. Ask everything you need at once, I don't have time for this."}
+{"role":"assistant","content":"Understood. Message_information_seeking: Please provide all required details upfront: pickup address, destination, weight, and preferred pickup time."}
+
+{"role":"user","content":"Pickup 123 Pine St, drop 789 Oak St, 2kg, tomorrow 9am."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"pickup":"123 Pine St","drop":"789 Oak St","weight":"2kg","time":"9am tomorrow"}', call_id='call_ship', name='schedule_pickup', type='function_call', id='fc_202', status='completed')"}
+{"role":"user","content":"That's better—one comprehensive ask."}
+<endstart>

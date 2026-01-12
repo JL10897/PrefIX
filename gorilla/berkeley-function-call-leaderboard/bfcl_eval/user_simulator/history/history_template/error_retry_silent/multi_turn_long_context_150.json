@@ -1,0 +1,3 @@
+{"role": "user", "content": "I'm planning travel from Rivermist to Stonebrook in October."}
+{"role": "model", "content": "TravelAPI.get_nearest_airport_by_city"}
+{"role": "tool", "name": "get_nearest_airport_by_city", "content": "API failure: service responded with 503 Service Unavailable."}

@@ -1,0 +1,3 @@
+{"role": "user", "content": "Update the market status for me, as I need to know the current outlook."}
+{"role": "model", "content": "TradingBot.get_current_time"}
+{"role": "tool", "name": "get_current_time", "content": "Network error: connection timed out while reaching the service."}

@@ -1,0 +1,15 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Book a flight to Seattle next week."}
+{"role":"assistant","content":"Got it. Message_information_seeking: I need your departure city and exact date."}
+
+{"role":"user","content":"Too many questions dumped at once—slow down and ask one by one."}
+{"role":"assistant","content":"Understood. Message_information_seeking: What city will you depart from?"}
+
+{"role":"user","content":"San Francisco."}
+{"role":"assistant","content":"Noted. Message_information_seeking: Which day next week works?"}
+
+{"role":"user","content":"Tuesday."}
+{"role":"assistant","content":"Great, proceeding. ResponseFunctionToolCall(arguments='{"from":"SFO","to":"SEA","date":"next Tuesday"}', call_id='call_flight_search', name='flight_search', type='function_call', id='fc_201', status='completed')"}
+{"role":"user","content":"Much better when you pace it like this."}
+<endstart>

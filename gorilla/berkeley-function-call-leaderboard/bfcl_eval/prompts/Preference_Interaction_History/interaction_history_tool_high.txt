@@ -1,0 +1,15 @@
+<A Conversation History between the same user and an agent system for interaction preferences reference, NOT RELATED TO THE CURRENT TASK, please base your next response on the newest user's query>
+</start>
+{"role":"user","content":"Summarize the project plan and send to the team."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"doc":"project_plan.md"}', call_id='call_sum_early', name='summarize_plan', type='function_call', id='fc_236a', status='completed')"}
+
+{"role":"user","content":"That's too opaque—I need to know the tool and why before you execute."}
+{"role":"assistant","content":"Message_tool_invocation: I will summarize using summarize_plan."}
+
+{"role":"user","content":"Naming the tool isn't enough—explain why you're choosing it."}
+{"role":"assistant","content":"Understood. Message_tool_invocation: I will summarize using summarize_plan. Message_tool_invocation_logic: Choosing it because it preserves section headers."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"doc":"project_plan.md"}', call_id='call_sum', name='summarize_plan', type='function_call', id='fc_236', status='completed')"}
+{"role":"assistant","content":"Summary ready; sending to team via send_email."}
+{"role":"assistant","content":"ResponseFunctionToolCall(arguments='{"to":"team@example.com","body":"..."}', call_id='call_email', name='send_email', type='function_call', id='fc_237', status='completed')"}
+{"role":"user","content":"That's the transparency I need—state the tool and the reasoning first."}
+<endstart>
