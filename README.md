@@ -29,20 +29,15 @@ Central to PrefIx is the **Interaction-as-a-Tool (IaaT)** paradigm, which treats
 
 ---
 
-## From BFCL v3 → PrefIx (Task Coarsening)
+## Task Coarsening
 
-PrefIx is seeded from **BFCL v3** multi-turn tool-use tasks. As-is, BFCL prompts are over-specified and self-contained — deliberately engineered to yield a single ground-truth trajectory, which leaves no room for agents to *differ in how they interact* (confirm or not, how much to explain, when to step back). **Task Coarsening** opens up that room.
+PrefIx's tasks are coarsened from **BFCL v3** multi-turn tool-use data. BFCL prompts are over-specified and self-contained — engineered to yield a single ground-truth trajectory — so they leave no room for agents to *differ in how they interact* (confirm or not, how much to explain, when to step back). Each task is rewritten into one high-level **Task Instruction** that preserves the original intent, parameters, and explicit ordering (so ground-truth tool calls stay deterministic and accuracy stays comparable to BFCL), while freeing the multi-turn interaction to express different user preferences.
 
-An LLM aggregates BFCL's scripted, step-by-step user turns into one high-level **Task Instruction** for the simulator, under two constraints:
-
-1. **Preserve task intent and parameter specs** so the ground-truth tool calls stay deterministic and downstream accuracy remains comparable to BFCL.
-2. **Retain explicit ordering** (e.g., "first X, then Y") while generalizing the phrasing so no single dialogue turn is forced to contain a specific piece of information.
-
-Coarsened rewrites live in `<PROJECT_ROOT>/Processing`. Real example (`multi_turn_long_context_3`):
+The resulting rewrites ship in `<PROJECT_ROOT>/Processing`. Example (`multi_turn_long_context_3`):
 
 > "As part of my photography project, I need to find files with 'test' in their name from any folder in my current directory. After identifying them, ensure the images and text files are safely copied into a 'backup_tests' folder right within the same directory."
 
-The intent (`find` files matching `test`, `cp` images + text into `backup_tests`) and ordering (find → copy) are preserved, but the agent is now free to realize it over multiple turns in whatever interaction style the user prefers.
+Intent (`find` files matching `test`, `cp` into `backup_tests`) and ordering (find → copy) are preserved; how the agent gets there across turns is left open.
 
 ---
 
