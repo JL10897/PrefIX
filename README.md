@@ -29,18 +29,6 @@ Central to PrefIx is the **Interaction-as-a-Tool (IaaT)** paradigm, which treats
 
 ---
 
-## Task Coarsening
-
-PrefIx's tasks are coarsened from **BFCL v3** multi-turn tool-use data. BFCL prompts are over-specified and self-contained — engineered to yield a single ground-truth trajectory — so they leave no room for agents to *differ in how they interact* (confirm or not, how much to explain, when to step back). Each task is rewritten into one high-level **Task Instruction** that preserves the original intent, parameters, and explicit ordering (so ground-truth tool calls stay deterministic and accuracy stays comparable to BFCL), while freeing the multi-turn interaction to express different user preferences.
-
-The resulting rewrites ship in `<PROJECT_ROOT>/Processing`. Example (`multi_turn_long_context_3`):
-
-> "As part of my photography project, I need to find files with 'test' in their name from any folder in my current directory. After identifying them, ensure the images and text files are safely copied into a 'backup_tests' folder right within the same directory."
-
-Intent (`find` files matching `test`, `cp` into `backup_tests`) and ordering (find → copy) are preserved; how the agent gets there across turns is left open.
-
----
-
 ## Environment
 
 Conda environment name: `ix_personalization`.
@@ -170,7 +158,7 @@ Most code lives in `<PROJECT_ROOT>/gorilla/berkeley-function-call-leaderboard`.
 
 - **Canonical model mapping**: `bfcl_eval/constants/model_config.py`
 - **Human-readable model list**: `SUPPORTED_MODELS.md`
-- **`<PROJECT_ROOT>/Processing`**: rewritten task instructions (coarsened prompts).
+- **`<PROJECT_ROOT>/Processing`**: coarsened Task Instructions — BFCL v3's over-specified prompts (which force a single trajectory) are rewritten into high-level instructions that preserve task intent, parameters, and ordering (so ground-truth tool calls stay deterministic) while freeing the multi-turn interaction to express user preferences.
 - **`bfcl_eval`**: core PrefIx pipeline.
 - **`bfcl_eval/LLM_as_judge_analysis`**: analysis notebooks and CSVs for judge-based UX metrics, including multi-model comparisons and per-dimension breakdowns.
 - **`bfcl_eval/user_simulator`**: simulator + prompts.
