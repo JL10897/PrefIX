@@ -23,10 +23,26 @@ Central to PrefIx is the **Interaction-as-a-Tool (IaaT)** paradigm, which treats
 
 ### Key Features
 
-- **Task Coarsening**: rewrite over-specified prompts into coarser task instructions while preserving deterministic tool-use ground truth.
-- **Preference-Aware User Simulation**: 31 preference settings across 14 attributes and 4 dimensions, expressed *implicitly* by the simulator rather than stated upfront.
-- **Interaction as a Tool (IaaT)**: represent interaction behaviors as structured tool calls so that alignment with user preferences becomes measurable.
-- **UX-as-a-Judge**: a composite LLM-as-a-Judge across 7 UX dimensions with strong reliability (ICC > 0.79, α = 0.943) and human correlation (ρ = 0.52–0.78).
+- **Interaction-as-a-Tool (IaaT)**: model interaction behaviors (confirm, disambiguate, abort, escalate, …) as callable tools alongside external APIs — unifying interaction evaluation with existing tool-use frameworks.
+- **UX on equal footing with task accuracy**: a taxonomy of 14 interaction-preference attributes across 4 dimensions (transparency & auditability, interaction pace & flow, strategy & initiative, robustness & adaptability) → 31 settings; agents are judged on both *what* they accomplish and *how* they interact.
+- **Reliable multi-judge UX scoring**: 4 LLMs independently score 7 UX dimensions and aggregate, removing single-judge bias. Reliability: ICC > 0.79, α = 0.943, human correlation ρ = 0.52–0.78.
+
+---
+
+## From BFCL v3 → PrefIx (Task Coarsening)
+
+PrefIx is seeded from **BFCL v3** multi-turn tool-use tasks. As-is, BFCL prompts are over-specified and self-contained — deliberately engineered to yield a single ground-truth trajectory, which leaves no room for agents to *differ in how they interact* (confirm or not, how much to explain, when to step back). **Task Coarsening** opens up that room.
+
+An LLM aggregates BFCL's scripted, step-by-step user turns into one high-level **Task Instruction** for the simulator, under two constraints:
+
+1. **Preserve task intent and parameter specs** so the ground-truth tool calls stay deterministic and downstream accuracy remains comparable to BFCL.
+2. **Retain explicit ordering** (e.g., "first X, then Y") while generalizing the phrasing so no single dialogue turn is forced to contain a specific piece of information.
+
+Coarsened rewrites live in `<PROJECT_ROOT>/Processing`. Real example (`multi_turn_long_context_3`):
+
+> "As part of my photography project, I need to find files with 'test' in their name from any folder in my current directory. After identifying them, ensure the images and text files are safely copied into a 'backup_tests' folder right within the same directory."
+
+The intent (`find` files matching `test`, `cp` images + text into `backup_tests`) and ordering (find → copy) are preserved, but the agent is now free to realize it over multiple turns in whatever interaction style the user prefers.
 
 ---
 
