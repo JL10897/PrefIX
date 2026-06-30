@@ -13,8 +13,6 @@ This repo contains the code and data for the paper: *PrefIx: Understand and Adap
   <img src="prefix_fig_benchmark_overview.png" alt="PrefIx Benchmark Overview" width="90%">
 </p>
 
-> [Download the overview figure as PDF](prefix_fig_benchmark_overview.pdf)
-
 ---
 
 ## Overview
@@ -29,24 +27,6 @@ Central to PrefIx is the **Interaction-as-a-Tool (IaaT)** paradigm, which treats
 - **Preference-Aware User Simulation**: 31 preference settings across 14 attributes and 4 dimensions, expressed *implicitly* by the simulator rather than stated upfront.
 - **Interaction as a Tool (IaaT)**: represent interaction behaviors as structured tool calls so that alignment with user preferences becomes measurable.
 - **UX-as-a-Judge**: a composite LLM-as-a-Judge across 7 UX dimensions with strong reliability (ICC > 0.79, α = 0.943) and human correlation (ρ = 0.52–0.78).
-
----
-
-## Leaderboard Snapshot
-
-**4 Models · 7 UX Dimensions · 31 Preference Settings · 14 Preference Attributes · 283 Samples**
-
-> Agent receives interaction history and infers user preferences (**Personalized**). Interaction Preference scores on a Likert 1–5 scale (higher is better). Tool Accuracy: Subset-Matched Response-based Evaluation.
-> Source: arXiv 2602.06714v1, Tables 2–3, Figure 3.
-
-| #  | Provider · Model        | Task Acc | Pref Aln | UX Avg | Initiative | Coherence | Intent Aln | Consistency | Efficiency | Cogn. Load | Overall UX |
-|----|-------------------------|----------|----------|--------|------------|-----------|------------|-------------|------------|------------|------------|
-| 1  | Google · Gemini 3 Flash   | 50.7%    | 4.152    | 4.190  | 4.319      | 3.947     | 4.808      | 4.746       | 3.394      | 3.971      | 4.145      |
-| 2  | Moonshot · Kimi K2        | 45.3%    | 3.461    | 3.802  | 3.916      | 3.785     | 4.514      | 4.364       | 3.122      | 3.393      | 3.519      |
-| 3  | Anthropic · Claude Opus 4.5  | 69.0%    | 3.983    | 3.703  | 3.871      | 3.407     | 4.317      | 4.247       | 2.838      | 3.462      | 3.777      |
-| 4  | Anthropic · Claude Sonnet 4.5 | 62.5%    | 3.930    | 3.546  | 3.752      | 3.229     | 4.284      | 4.044       | 2.663      | 3.249      | 3.601      |
-
-Live rankings and the before/after personalization breakdown: [prefix-leaderboard.vercel.app](https://prefix-leaderboard.vercel.app/).
 
 ---
 
